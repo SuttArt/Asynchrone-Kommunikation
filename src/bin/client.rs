@@ -1,5 +1,6 @@
 use std::{env, net::TcpStream, thread};
 use std::io::{self, Write, BufReader, BufRead};
+use std::net::Shutdown;
 
 fn main() -> io::Result<()> {
 	let addr = env::args().nth(1).unwrap_or(String::from("127.0.0.1:8000"));
@@ -26,6 +27,14 @@ fn main() -> io::Result<()> {
 	loop {
 		input.clear();
 		io::stdin().read_line(&mut input)?;
+		if input.trim().eq_ignore_ascii_case("exit") {
+			println!("Connection terminated.");
+
+			_stream.shutdown(Shutdown::Both)?;
+			break;
+		}
 		_stream.write_all(input.as_bytes())?;
 	}
+
+	Ok(())
 }
