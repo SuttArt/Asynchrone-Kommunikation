@@ -1,11 +1,14 @@
-use std::{io, env, net::TcpStream};
-use std::io::Write;
+use std::{env, net::TcpStream, io::{self, Read, Write}};
 
 fn main() -> io::Result<()> {
 	let addr = env::args().nth(1).unwrap_or(String::from("127.0.0.1:8000"));
 	let mut _stream = TcpStream::connect(addr)?;
 
-	_stream.write(&[1])?;
+	_stream.write(b"Hello, Server!")?;
+
+	let mut buffer = [0; 128];
+	let n = _stream.read(&mut buffer)?;
+	println!("Nachricht vom Server empfangen: {}", String::from_utf8_lossy(&buffer[..n]));
 	// TODO: implement client logic
 	
 	Ok(())
