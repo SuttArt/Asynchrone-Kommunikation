@@ -14,7 +14,7 @@ fn main() -> io::Result<()> {
 		match stream {
 			Ok(stream) => {
 				let clients = Arc::clone(&clients);
-				clients.lock().unwrap().push(stream.try_clone().unwrap());
+				clients.lock().unwrap().push(stream.try_clone()?);
 
 				thread::spawn(move || {
 					handle_client(stream, clients);
