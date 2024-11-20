@@ -58,14 +58,14 @@ fn handle_client(stream: TcpStream, clients: Arc<Mutex<Vec<TcpStream>>>) {
 
 	println!("Client {} has closed the connection.", peer_addr);
 
-	// Send to all, that client left the chat room.
-	let message = format!("The client {} left the chat room.\n", peer_addr);
-	broadcast_clients(clients.clone(), peer_addr, message);
-
 	// Remove the client from the list of connected clients when it has closed the connection
 	let mut clients_mut = clients.lock().unwrap();
 	clients_mut.retain(|client| client.peer_addr().unwrap() != peer_addr);
 	println!("Client {} has been removed.", peer_addr);
+
+	// Send to all, that client left the chat room.
+	let message = format!("The client {} left the chat room.\n", peer_addr);
+	broadcast_clients(clients.clone(), peer_addr, message);
 }
 
 
